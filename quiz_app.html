@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カンテレ○×クイズ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html {
+      box-sizing: border-box;
+      /* 基準フォントサイズを1.5倍に変更 */
+      font-size: 24px;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    body {
+      background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+      color: #333;
+      font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    #header {
+      /* px値を1.5倍に変更 */
+      margin-top: 30px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      height: 120px;
+    }
+    .header-character {
+      /* px値を1.5倍に変更 */
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+    }
+    #charLeft[src="hachiemon_left_open.png"] {
+      /* px値を1.5倍に変更 */
+      width: 85px;
+      height: 85px;
+      margin-top: -3px;
+    }
+    .header-title-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      /* px値を1.5倍に変更 */
+      width: 240px;
+      flex-shrink: 0;
+    }
+    .kantele-logo {
+      font-size: 2em;
+      font-weight: bold;
+      color: #d946a6;
+      letter-spacing: 0.08em;
+      text-shadow: 2px 2px 0 #fff, 0 2px 8px rgba(217, 70, 166, 0.3);
+      font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+      display: block;
+    }
+    .kantele-sub {
+      font-size: 1.05em;
+      color: #333;
+      margin-top: 5px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .container {
+      width: 90%;
+      /* px値を1.5倍に変更 */
+      max-width: 720px;
+      margin: 22px auto 37px auto;
+      min-width: 0;
+    }
+    #topPage {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(217, 70, 166, 0.15);
+      padding: 6vw 5vw;
+      border: 2px solid #f8bbd0;
+    }
+    #quizPage {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(217, 70, 166, 0.15);
+      padding: 5vw 4vw;
+      border: 2px solid #f8bbd0;
+    }
+    .kantele-footer {
+      color: #999;
+      font-size: 0.9em;
+      letter-spacing: 0.04em;
+      margin-bottom: 15px;
+    }
+    .top-title {
+      font-size: 1.8em;
+      font-weight: bold;
+      color: #d946a6;
+      margin-bottom: 4vw;
+      line-height: 1.6;
+    }
+    .top-description {
+      font-size: 0.95em;
+      color: #666;
+      margin-bottom: 6vw;
+      line-height: 1.7;
+    }
+    .top-emoji {
+      font-size: 3em;
+      margin-bottom: 4vw;
+    }
+    #question {
+      font-size: 1em;
+      margin-bottom: 5vw;
+      font-weight: bold;
+      letter-spacing: 0.02em;
+      color: #333;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+    .button-container {
+      margin-bottom: 5vw;
+    }
+    .btn {
+      padding: 3.5vw 0;
+      width: 38vw;
+      /* px値を1.5倍に変更 */
+      min-width: 150px;
+      max-width: 300px;
+      font-size: 1.1em;
+      margin: 0 2vw 3vw 2vw;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(236, 72, 153, 0.25);
+      transition: background 0.2s, transform 0.1s;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      transform: scale(1.05);
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-start {
+      width: 50vw;
+      /* px値を1.5倍に変更 */
+      max-width: 360px;
+      padding: 4vw 0;
+      font-size: 1.2em;
+      margin: 3vw 0;
+    }
+    #result {
+      font-size: 1.05em;
+      margin: 4vw 0 3vw 0;
+      font-weight: bold;
+      color: #d946a6;
+      word-break: break-word;
+    }
+    #explanation {
+      color: #666;
+      margin-bottom: 4vw;
+      word-break: break-word;
+      line-height: 1.5;
+      font-size: 0.95em;
+    }
+    #nextBtn {
+      background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+      margin-top: 3vw;
+    }
+    #nextBtn:hover {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    }
+    #resultBtn {
+      background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+      margin-top: 3vw;
+    }
+    #resultBtn:hover {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    }
+    #homeBtn {
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      margin-top: 3vw;
+    }
+    #homeBtn:hover {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+    .accent-text {
+      color: #0ea5e9;
+    }
+    .hidden {
+      display: none;
+    }
+    /* メディアクエリのブレークポイントを1.5倍に変更 */
+    @media (max-width: 900px) {
+      #topPage {
+        padding: 6vw 5vw;
+      }
+      #quizPage {
+        padding: 5vw 4vw;
+      }
+      .btn {
+        width: 75vw;
+        min-width: 0;
+        font-size: 1em;
+        padding: 3.5vw 0;
+      }
+      .btn-start {
+        width: 80vw;
+        max-width: none;
+        font-size: 1.1em;
+      }
+      #question {
+        font-size: 0.95em;
+      }
+      #result {
+        font-size: 1em;
+      }
+      #header {
+        margin-top: 15px;
+        margin-bottom: 10px;
+      }
+      .kantele-logo {
+        font-size: 1.7em;
+      }
+      .kantele-sub {
+        font-size: 1em;
+      }
+      .top-title {
+        font-size: 1.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <img id="charLeft" class="header-character" src="hachiemon_left_close.png" alt="">
+    <div class="header-title-wrapper">
+      <span class="kantele-logo">カンテレ</span>
+      <span class="kantele-sub">技術・ITクイズ</span>
+    </div>
+    <img id="charRight" class="header-character" src="hachiemon_right_close.png" alt="">
+  </div>
+
+  <div class="container">
+    <div id="topPage">
+      <div class="kantele-footer">関西テレビ 技術・ITクイズ！</div>
+      <div class="top-emoji">🎬</div>
+      <div class="top-title">カンテレの技術について<br>どのくらい知ってる？</div>
+      <div class="top-description">
+        関西テレビの放送技術やITについての問題に挑戦！<br>
+        全10問のクイズで、あなたの知識を試してみませんか？
+      </div>
+      <button class="btn btn-start" id="startBtn">スタート</button>
+    </div>
+
+    <div id="quizPage" class="hidden">
+      <div id="question"></div>
+      <div class="button-container" id="answerButtons">
+        <button class="btn" id="trueBtn">〇</button>
+        <button class="btn" id="falseBtn">×</button>
+      </div>
+      <div id="result"></div>
+      <div id="explanation"></div>
+      <button class="btn" id="nextBtn" style="display:none;">次の問題へ</button>
+      <button class="btn" id="resultBtn" style="display:none;">結果を見る</button>
+    </div>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        q: '「テレビのデータは全て生駒山にある鉄塔を経由して各家庭に届けられるが、これは関東で言うところの東京タワーにあたる。」',
+        answer: false,
+        explanation: '正しくは、スカイツリー。スカイツリーは６３４ｍで、生駒山＋鉄塔の高さに匹敵する。'
+      },
+      {
+        q: '「生駒山の鉄塔で７割の世帯をカバーできる。」',
+        answer: true,
+        explanation: '残りの３割は、７２個の中継局と６８個のミニサテでカバーしている。'
+      },
+      {
+        q: '「生駒山の鉄塔は全部で５本ある。」',
+        answer: true,
+        explanation: '関西準キー局４つとNHKの計５本。ちなみに関東はスカイツリーの１本でこの役割を担っている。'
+      },
+      {
+        q: '「スタジオの映像や音声などの情報が集まるサブは、『テレビの心臓部』と呼ばれている。」',
+        answer: false,
+        explanation: '『テレビの心臓部』と呼ばれているのは、マスター（主調整室）。収録の映像だけでなく、CM、データ放送、提供、字幕など全ての情報が集まる。'
+      },
+      {
+        q: '「テレビの心臓部であるマスターは、各テレビ局に１つしかない。」',
+        answer: false,
+        explanation: 'トラブルに備えて複数台用意されている。カンテレには、現用と予備と待機の３台存在する。'
+      },
+      {
+        q: '「１つのテレビ局が複数のチャンネルを持つことは可能である。」',
+        answer: true,
+        explanation: 'カンテレには３つのチャンネルがある。画質は落ちるが、野球中継の続行などに使われている。'
+      },
+      {
+        q: '「グリーンバックで背景を合成することができるが、グリーンがないところに背景を拡張させることはできない。」',
+        answer: false,
+        explanation: '実際に万博のスタジオで使われていた。この技術を使えば、狭いスタジオでも広く見える映像を作り出すことができる。'
+      },
+      {
+        q: '「カンテレの音声中継車はＭＩＸルームが日本で唯一２つある。」',
+        answer: true,
+        explanation: '本社ではなく中継先で、立体音響を作ることができるのも特徴。'
+      },
+      {
+        q: '「ＶＲ（仮想現実）、ＭＲ（複合現実）、ＡＲ（拡張現実）をまとめて、ＸＲと呼ぶ。」',
+        answer: true,
+        explanation: '「カンテレＸＲ」では、テレビ局ならではのプロデュースとＸＲ技術を掛け合わせた体験を提供している。'
+      },
+      {
+        q: '「カンテレの自社常設のＸＲ施設が存在する」',
+        answer: false,
+        explanation: '来年４月に梅田に誕生する。汎用コンテンツでビジネス効率の向上を目指す。'
+      }
+    ];
+
+    let current = 0;
+    let answered = false;
+    let correctCount = 0;
+    let wrongCount = 0;
+
+    const topPage = document.getElementById('topPage');
+    const quizPage = document.getElementById('quizPage');
+    const startBtn = document.getElementById('startBtn');
+    const questionEl = document.getElementById('question');
+    const trueBtn = document.getElementById('trueBtn');
+    const falseBtn = document.getElementById('falseBtn');
+    const resultEl = document.getElementById('result');
+    const explanationEl = document.getElementById('explanation');
+    const nextBtn = document.getElementById('nextBtn');
+    const resultBtn = document.getElementById('resultBtn');
+    const answerButtons = document.getElementById('answerButtons');
+
+    function startQuiz() {
+      current = 0;
+      answered = false;
+      correctCount = 0;
+      wrongCount = 0;
+      topPage.classList.add('hidden');
+      quizPage.classList.remove('hidden');
+      showQuestion();
+    }
+
+    function goToTop() {
+      current = 0;
+      answered = false;
+      correctCount = 0;
+      wrongCount = 0;
+      topPage.classList.remove('hidden');
+      quizPage.classList.add('hidden');
+      resultEl.textContent = '';
+      explanationEl.textContent = '';
+      questionEl.textContent = '';
+    }
+
+    function showQuestion() {
+      questionEl.textContent = '第' + (current + 1) + '問：' + quiz[current].q;
+      resultEl.textContent = '';
+      explanationEl.textContent = '';
+      trueBtn.disabled = false;
+      falseBtn.disabled = false;
+      answerButtons.style.display = 'block';
+      nextBtn.style.display = 'none';
+      resultBtn.style.display = 'none';
+      answered = false;
+    }
+
+    function checkAnswer(ans) {
+      if (answered) return;
+      answered = true;
+      const correct = quiz[current].answer === ans;
+      if (correct) {
+        correctCount++;
+      } else {
+        wrongCount++;
+      }
+      resultEl.textContent = correct ? '正解！' : '不正解';
+      resultEl.style.color = correct ? '#10b981' : '#ef4444';
+      explanationEl.textContent = quiz[current].explanation;
+      trueBtn.disabled = true;
+      falseBtn.disabled = true;
+      
+      if (current < quiz.length - 1) {
+        nextBtn.style.display = 'inline-block';
+      } else {
+        resultBtn.style.display = 'inline-block';
+      }
+    }
+
+    function showFinalResult() {
+      const total = correctCount + wrongCount;
+      const rate = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+      
+      let levelText = '';
+      let levelColor = '#d946a6';
+      if (rate <= 50) {
+        levelText = 'あなたはカンテレ初心者';
+        levelColor = '#f97316';
+      } else if (rate <= 80) {
+        levelText = 'あなたはカンテレ中級者！';
+        levelColor = '#d946a6';
+      } else {
+        levelText = 'あなたはカンテレ上級者！！';
+        levelColor = '#8b5cf6';
+      }
+      
+      questionEl.textContent = 'クイズ終了！お疲れさまでした。';
+      resultEl.innerHTML = '正解数: <b>' + correctCount + '</b>　不正解数: <b>' + wrongCount + '</b>';
+      resultEl.style.color = '#d946a6';
+      explanationEl.innerHTML = '正答率: <span class="accent-text"><b>' + rate + '%</b></span><br><br><span style="color: ' + levelColor + '; font-size: 1.6em; font-weight: bold; letter-spacing: 0.05em;">' + levelText + '</span>';
+      answerButtons.style.display = 'none';
+      nextBtn.style.display = 'none';
+      resultBtn.style.display = 'none';
+      document.getElementById('homeBtn').style.display = 'inline-block';
+    }
+
+    startBtn.onclick = startQuiz;
+    trueBtn.onclick = function() { checkAnswer(true); };
+    falseBtn.onclick = function() { checkAnswer(false); };
+    nextBtn.onclick = function() {
+      current++;
+      showQuestion();
+    };
+    resultBtn.onclick = showFinalResult;
+
+    // ホームボタン用の要素を動的に作成
+    const homeBtn = document.createElement('button');
+    homeBtn.id = 'homeBtn';
+    homeBtn.className = 'btn';
+    homeBtn.textContent = 'トップへ';
+    homeBtn.style.display = 'none';
+    homeBtn.onclick = goToTop;
+    document.getElementById('quizPage').appendChild(homeBtn);
+
+    // キャラクター画像アニメーション
+    const charLeft = document.getElementById('charLeft');
+    const charRight = document.getElementById('charRight');
+
+    function animateCharacters() {
+      setTimeout(function() {
+        // 2秒後: openに変更
+        charLeft.src = 'hachiemon_left_open.png';
+        charRight.src = 'hachiemon_right_open.png';
+        
+        setTimeout(function() {
+          // 0.3秒後: closeに変更
+          charLeft.src = 'hachiemon_left_close.png';
+          charRight.src = 'hachiemon_right_close.png';
+          
+          setTimeout(function() {
+            // 0.3秒後: openに変更
+            charLeft.src = 'hachiemon_left_open.png';
+            charRight.src = 'hachiemon_right_open.png';
+            
+            setTimeout(function() {
+              // 0.3秒後: closeに変更
+              charLeft.src = 'hachiemon_left_close.png';
+              charRight.src = 'hachiemon_right_close.png';
+              
+              // 1セット終了後、再度ループ
+              animateCharacters();
+            }, 300);
+          }, 300);
+        }, 300);
+      }, 2000);
+    }
+
+    // アニメーション開始
+    animateCharacters();
+  </script>
+</body>
+</html>
